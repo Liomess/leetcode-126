@@ -1,0 +1,63 @@
+from collections import deque
+class Solution:
+    def findSequences(self, start, target, wordList):
+        def dfs(target,seq,ans,d,n,start):
+            if target==start:
+                seq=seq[::-1]
+                ans.append(seq)
+                seq=seq[::-1]
+                return
+            steps=d[target]
+            for i in range(n):
+                org=target[i]
+                for j in range(26):
+    		        target=list(map(lambda x:x,target))
+    		        ch=chr(97+j)
+    		        target[i]=ch
+    		        s=""
+    		        target=s.join(target)
+    		        if (target in d) and (d[target]+1==steps):
+    		            seq.append(target)
+    		            dfs(target,seq,ans,d,n,start)
+    		            seq.pop()
+    		    target=list(map(lambda x:x,target))
+    		    target[i]=org
+    		    s=""
+    		    target=s.join(target)
+                
+        
+        
+        n=len(start)
+        st=set(wordList)
+        d={}
+        q=deque()
+        q.append(start)
+        d[start]=1
+        st.discard(start)
+        while q:
+            word=q.popleft()
+            steps=d[word]
+            if word==target:
+                break
+            for i in range(n):
+		        org=word[i]
+		        for j in range(26):
+    		        word=list(map(lambda x:x,word))
+    		        ch=chr(97+j)
+    		        word[i]=ch
+    		        s=""
+    		        word=s.join(word)
+    		        if word in st:
+        		        q.append(word)
+        		        st.discard(word)
+        		        d[word]=steps+1
+    		    word=list(map(lambda x:x,word))
+    		    word[i]=org
+    		    s=""
+    		    word=s.join(word)
+    	ans=[]
+    	if target in d:
+    	    seq=[]
+    	    seq.append(target)
+    	    dfs(target,seq,ans,d,n,start)
+    	return ans
